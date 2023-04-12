@@ -158,7 +158,7 @@ Find me on:
 2.0.0 20220127 - JBines - [MAJOR RELEASE] Complete script rewrite. 
                         - Added support for App Only Connections with Graph API. Also Started Graph API for the Last Login Date which is vaild back to Apr-2020.  
 2.0.1 20220210 - JBines - [BUGFIX] Small issue found with VAR client secret. Line 305 - https://github.com/JBines/Remove-StaleGuests/issues/8 
-2.0.2 20220404 - JBines - [BUGFIX] PowerShell v7 has has strict header parsing added switchto bypass -SkipHeaderValidation
+2.0.2 20220404 - JBines - [BUGFIX] PowerShell v7 has has strict header parsing added switchto bypass
 
 [TO DO LIST / PRIORITY]
 Support the use of managed identitiy / HIGH
@@ -341,7 +341,7 @@ Param
         $Guests = @()
 
         While ($ApiUrl -ne $Null){ #Perform pagination if next page link (odata.nextlink) returned.
-            $Response = Invoke-WebRequest -Method 'GET' -Uri $ApiUrl -Headers $headers -ContentType "application\json" -UseBasicParsing -SkipHeaderValidation  | ConvertFrom-Json
+            $Response = Invoke-WebRequest -Method 'GET' -Uri $ApiUrl -Headers $headers -ContentType "application\json" -UseBasicParsing  | ConvertFrom-Json
 
             if($Response.value){
                 $Users = $Response.value
@@ -424,7 +424,7 @@ Param
                 If($counter -lt $DifferentialScope){
                     $counter++
                     $deleteguestApiUrl = "https://graph.microsoft.com/beta/users/$($guest.userID)"
-                    $deleteguestResponse = Invoke-WebRequest -Method 'DELETE' -Uri $deleteguestApiUrl -ContentType "application\json" -Headers $headers -UseBasicParsing -SkipHeaderValidation
+                    $deleteguestResponse = Invoke-WebRequest -Method 'DELETE' -Uri $deleteguestApiUrl -ContentType "application\json" -Headers $headers -UseBasicParsing
 
                     If($deleteguestResponse.StatusCode -eq 204){Write-Log -Message "REMOVE-ExpiredGuest;UPN:$($Guest.userPrincipalName);ObjectId:$($guest.userID);CreationDate:$($guest.creationDateTime);lastSignInDateTime:$($guest.lastSignInDateTime)" -LogLevel SUCCESS -ConsoleOutput }
                     else{Write-Log -Message "FAILED-REMOVE-ExpiredGuest;UPN:$($Guest.userPrincipalName);ObjectId:$($guest.userID);CreationDate:$($guest.creationDateTime);lastSignInDateTime:$($guest.lastSignInDateTime)" -LogLevel ERROR -ConsoleOutput}
@@ -447,7 +447,7 @@ Param
                     If($counter -lt $DifferentialScope){
                         $counter++
                         $deleteguestApiUrl = "https://graph.microsoft.com/beta/users/$($guest.userID)"
-                        $deleteguestResponse = Invoke-WebRequest -Method 'DELETE' -Uri $deleteguestApiUrl -ContentType "application\json" -Headers $headers -UseBasicParsing -SkipHeaderValidation
+                        $deleteguestResponse = Invoke-WebRequest -Method 'DELETE' -Uri $deleteguestApiUrl -ContentType "application\json" -Headers $headers -UseBasicParsing
 
                         If($deleteguestResponse.StatusCode -eq 204){Write-Log -Message "REMOVE-InActiveGuest;UPN:$($Guest.userPrincipalName);ObjectId:$($guest.userID);CreationDate:$($guest.creationDateTime);lastSignInDateTime:$($guest.lastSignInDateTime)" -LogLevel SUCCESS -ConsoleOutput }
                         else{Write-Log -Message "FAILED-REMOVE-InActiveGuest;UPN:$($Guest.userPrincipalName);ObjectId:$($guest.userID);CreationDate:$($guest.creationDateTime);lastSignInDateTime:$($guest.lastSignInDateTime)" -LogLevel ERROR -ConsoleOutput}
@@ -470,7 +470,7 @@ Param
         
         Write-Log -Message "Exporting to CSV with path of $ExportCSVPath" -LogLevel INFO -ConsoleOutput
                             
-        $Guests | Export-Csv -Path $ExportCSVPath -Encoding UTF8
+        $Guests | Export-Csv -Path $ExportCSVPath -Encoding UTF8 -NoTypeInformation -Delimiter ';'
                         
     }
 
